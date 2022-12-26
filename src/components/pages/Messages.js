@@ -3,6 +3,9 @@ import { BiPlus } from "react-icons/bi";
 import Layout from "../Layout";
 
 export default function Messages() {
+  const messageText =
+    "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Exercitationem dignissimos, deleniti pariatur quo eaque doloremque blanditiis nam facilis sequi numquam ratione omnis error corporis aspernatur commodi possimus tempora. Consectetur, quasi?";
+
   return (
     <Layout>
       <div className="pt-6">
@@ -17,62 +20,31 @@ export default function Messages() {
         </div>
 
         <div>
-          <div className="flex items-center justify-between border-b py-1.5 px-1 border-x border-x-white hover:shadow-md hover:border-x-gray-200">
-            <div className="flex items-center justify-start gap-5">
+          <div className="flex items-center justify-between border-b py-1.5 px-2 border-x border-x-white hover:shadow-md hover:border-x-gray-200">
+            <input
+              type="checkbox"
+              className="mr-3 accent-indigo-600 cursor-pointer "
+            />
+            <div className=" w-64 md:w-72 lg:w-72 flex items-center justify-start gap-2">
               <img
                 src="./images/blankImage.png"
                 alt="user"
                 className="w-8 h-8 rounded-md"
               />
-              <span className=" font-semibold ">Fahim muntasir</span>
+              <span className=" leading-4 ">Fahim muntasir</span>
             </div>
-            <div>
-              <p>
-                You: Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Harum, quae!...
+            <div className=" w-80 md:w-full lg:w-full">
+              <p className=" hidden lg:block  leading-4">
+                You: {messageText.slice(0, 70)}...
+              </p>
+              <p className=" hidden md:block lg:hidden  leading-4">
+                You: {messageText.slice(0, 30)}...
+              </p>
+              <p className=" block md:hidden lg:hidden  leading-4">
+                You: {messageText.slice(0, 20)}...
               </p>
             </div>
-            <div>
-              <span className="text-sm font-semibold">Jul 2</span>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between border-b py-1.5 px-1 border-x border-x-white hover:shadow-md hover:border-x-gray-200">
-            <div className="flex items-center justify-start gap-5">
-              <img
-                src="./images/blankImage.png"
-                alt="user"
-                className="w-8 h-8 rounded-md"
-              />
-              <span className=" font-semibold ">Fahim muntasir</span>
-            </div>
-            <div>
-              <p>
-                You: Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Harum, quae!...
-              </p>
-            </div>
-            <div>
-              <span className="text-sm font-semibold">Jul 2</span>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between border-b py-1.5 px-1 border-x border-x-white hover:shadow-md hover:border-x-gray-200">
-            <div className="flex items-center justify-start gap-5">
-              <img
-                src="./images/blankImage.png"
-                alt="user"
-                className="w-8 h-8 rounded-md"
-              />
-              <span className=" font-semibold ">Fahim muntasir</span>
-            </div>
-            <div>
-              <p>
-                You: Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Harum, quae!...
-              </p>
-            </div>
-            <div>
+            <div className="w-20 text-right ">
               <span className="text-sm font-semibold">Jul 2</span>
             </div>
           </div>
