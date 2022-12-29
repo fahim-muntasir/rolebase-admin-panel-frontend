@@ -10,6 +10,7 @@ export default function Users() {
     const [allUsers, setUsers] = useState([]);
     const [showActionMenu, setShowActionMenu] = useState(true);
     const [showPermissionDiv, setShowPermissionDiv] = useState(false);
+    const [selectedUsers, setSelectedUser] = useState([]);
 
     const { role } = useParams();
     const location = useLocation();
@@ -72,6 +73,31 @@ export default function Users() {
     //         document.removeEventListener("mousedown", handler);
     //     };
     // });
+
+    // user select checkbox handler;
+    const userCheckBoxHandler = (userID) => {
+        if (selectedUsers.includes(userID)) {
+            // create a copy selected product array to splice the product id;
+            const copySelectedProducts = [...selectedUsers];
+            // fild index;
+            const productIdIndex = copySelectedProducts.indexOf(userID);
+            // splice the existing element;
+            copySelectedProducts.splice(productIdIndex, 1);
+            setSelectedUser(copySelectedProducts);
+        } else {
+            setSelectedUser([...selectedUsers, userID]);
+        }
+    };
+
+    // all select handler;
+    const allSelectHandler = () => {
+        if (allUsers?.length === selectedUsers?.length) {
+            setSelectedUser([]);
+        } else {
+            const allUserIds = allUsers.map((product) => product._id);
+            setSelectedUser(allUserIds);
+        }
+    };
 
     return (
         <Layout>
@@ -167,7 +193,16 @@ export default function Users() {
                                                     scope="col"
                                                     className="py-2 text-left w-8"
                                                 >
-                                                    <input type="checkbox" />
+                                                    <input
+                                                        checked={
+                                                            allUsers?.length ===
+                                                            selectedUsers?.length
+                                                        }
+                                                        type="checkbox"
+                                                        onChange={
+                                                            allSelectHandler
+                                                        }
+                                                    />
                                                 </th>
                                                 <th
                                                     scope="col"
@@ -217,7 +252,17 @@ export default function Users() {
                                                     }
                                                 >
                                                     <td className=" w-8 py-2 whitespace-nowrap">
-                                                        <input type="checkbox" />
+                                                        <input
+                                                            checked={selectedUsers.includes(
+                                                                user["_id"]
+                                                            )}
+                                                            type="checkbox"
+                                                            onChange={() =>
+                                                                userCheckBoxHandler(
+                                                                    user["_id"]
+                                                                )
+                                                            }
+                                                        />
                                                     </td>
                                                     <td className="pr-6 py-2 whitespace-nowrap text-sm font-medium text-gray-900 pl-3 md:pl-0 lg:pl-0">
                                                         {i + 1}
