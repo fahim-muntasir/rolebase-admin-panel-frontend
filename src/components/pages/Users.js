@@ -4,9 +4,12 @@ import { AiOutlineExport, AiOutlinePlus } from "react-icons/ai";
 import { BiDotsHorizontal } from "react-icons/bi";
 import { Link, useLocation, useParams } from "react-router-dom";
 import Layout from "../Layout";
+import UserPermission from "../userPermission/UserPermission";
 
 export default function Users() {
     const [allUsers, setUsers] = useState([]);
+    const [showActionMenu, setShowActionMenu] = useState(true);
+    const [showPermissionDiv, setShowPermissionDiv] = useState(false);
 
     const { role } = useParams();
     const location = useLocation();
@@ -41,6 +44,34 @@ export default function Users() {
                 );
         }
     };
+
+    const showActionMenuHandler = () => {
+        setShowActionMenu((prev) => !prev);
+    };
+
+    const showPermissionDivHandler = () => {
+        setShowPermissionDiv(true);
+    };
+
+    const hidePermissionDivHandler = () => {
+        setShowPermissionDiv(false);
+    };
+
+    // this process for hide action me when use click on the outside the menu
+    // const actionMenu = useRef();
+    // useEffect(() => {
+    //     const handler = (event) => {
+    //         if (!actionMenu.current.contains(event.target)) {
+    //             setShowActionMenu(false);
+    //         }
+    //     };
+
+    //     document.addEventListener("mousedown", handler);
+
+    //     return () => {
+    //         document.removeEventListener("mousedown", handler);
+    //     };
+    // });
 
     return (
         <Layout>
@@ -113,11 +144,23 @@ export default function Users() {
                 </div>
 
                 {allUsers.length > 0 && (
-                    <div className="w-full">
-                        <div className="flex flex-col min-w-full ">
+                    <div className="w-full lg:flex gap-3">
+                        <div
+                            className={`flex flex-col pt-3 ${
+                                showPermissionDiv
+                                    ? "w-full lg:w-[68%] mb-3 md:mb-3 lg:mb-0"
+                                    : "min-w-full"
+                            }`}
+                        >
                             <div className="py-2 inline-block min-w-full">
                                 <div className="overflow-x-auto pb-4 tableScrollBar">
-                                    <table className="min-w-full">
+                                    <table
+                                        className={
+                                            showPermissionDiv
+                                                ? "min-w-max lg:mx-auto"
+                                                : "min-w-max lg:min-w-full"
+                                        }
+                                    >
                                         <thead className="bg-white border-b">
                                             <tr>
                                                 <th
@@ -167,8 +210,11 @@ export default function Users() {
                                         <tbody>
                                             {allUsers.map((user, i) => (
                                                 <tr
-                                                    key={user.email}
+                                                    key={i}
                                                     className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100"
+                                                    onClick={
+                                                        showPermissionDivHandler
+                                                    }
                                                 >
                                                     <td className=" w-8 py-2 whitespace-nowrap">
                                                         <input type="checkbox" />
@@ -195,7 +241,9 @@ export default function Users() {
                                                         )}
                                                     </td>
                                                     <td className=" relative text-xl text-gray-900 font-light px-6 py-2 whitespace-nowrap flex justify-center">
-                                                        <BiDotsHorizontal className=" cursor-pointer text-gray-600 " />
+                                                        <button>
+                                                            <BiDotsHorizontal className=" cursor-pointer text-gray-600 " />
+                                                        </button>
                                                     </td>
                                                 </tr>
                                             ))}
@@ -204,6 +252,11 @@ export default function Users() {
                                 </div>
                             </div>
                         </div>
+                        {showPermissionDiv && (
+                            <UserPermission
+                                handler={hidePermissionDivHandler}
+                            />
+                        )}
                     </div>
                 )}
 
