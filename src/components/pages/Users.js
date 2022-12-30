@@ -1,6 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { AiOutlineExport, AiOutlinePlus } from "react-icons/ai";
+import {
+    AiOutlineDelete,
+    AiOutlineExport,
+    AiOutlinePlus,
+} from "react-icons/ai";
 import { BiDotsHorizontal } from "react-icons/bi";
 import { Link, useLocation, useParams } from "react-router-dom";
 import Layout from "../Layout";
@@ -115,7 +119,7 @@ export default function Users() {
                         </button>
                     </div>
                 </div>
-                <div className=" border-solid border-b border-gray-200 pb-2 mb-3 ">
+                <div className=" border-solid border-b border-gray-200 pb-2 mb-3 flex justify-between ">
                     <ul className="flex gap-6 text-sm text-gray-500 font-medium ">
                         <li className="relative">
                             <Link
@@ -167,6 +171,13 @@ export default function Users() {
                             </Link>
                         </li>
                     </ul>
+                    <div>
+                        {selectedUsers?.length > 0 && (
+                            <button className="flex items-center rounded px-2 h-7 text-sm shadow-sm hover:shadow font-semibold border border-solid border-red-500 text-red-500 gap-1 ">
+                                <AiOutlineDelete /> Delete
+                            </button>
+                        )}
+                    </div>
                 </div>
 
                 {allUsers.length > 0 && (

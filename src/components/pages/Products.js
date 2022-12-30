@@ -13,9 +13,9 @@ import ProductInfo from "../productInfo/ProductInfo";
 
 export default function Products() {
     const [products, setProducts] = useState([]);
-    const [isProductInfo, setProductInfo] = useState([]);
-    const [loading, setLoading] = useState(false);
     const [selectedProducts, setSelectedProduct] = useState([]);
+    const [selectedProductId, setSelectedProductId] = useState(""); // this id for show information
+    const [showHideProductInfo, setShowHideProductInfo] = useState(false);
 
     const { status } = useParams();
     const location = useLocation();
@@ -25,16 +25,12 @@ export default function Products() {
     } = UseContext();
 
     const productInfoShowHandlear = (id) => {
-        setLoading(true);
-        setTimeout(() => {
-            setLoading(false);
-        }, 900);
-        const focusProduct = products.filter((p) => p._id === id);
-        setProductInfo(focusProduct);
+        setSelectedProductId(id);
+        setShowHideProductInfo(true);
     };
 
     const productInfoHideHandlear = () => {
-        setProductInfo([]);
+        setShowHideProductInfo(false);
     };
 
     const productStatusType = (status) => {
@@ -180,7 +176,7 @@ export default function Products() {
                     <div className="w-full lg:flex gap-3">
                         <div
                             className={`flex flex-col pt-3 ${
-                                isProductInfo.length > 0
+                                showHideProductInfo
                                     ? "w-full lg:w-[68%] mb-3 md:mb-3 lg:mb-0"
                                     : "min-w-full"
                             }`}
@@ -292,13 +288,9 @@ export default function Products() {
                                                         {product.creator.email}
                                                     </td>
                                                     <td className=" relative text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
-                                                        {/* <span className="bg-green-400 text-white font-medium px-2 pb-1 rounded-lg">
-                              {product.status}
-                            </span> */}
                                                         {productStatusType(
                                                             product.status
                                                         )}
-                                                        {/* <BiDotsHorizontalRounded className=" absolute cursor-pointer top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-lg " /> */}
                                                     </td>
                                                     <td className=" relative text-xl text-gray-900 font-light px-6 py-2 whitespace-nowrap flex justify-center">
                                                         <HiOutlineViewGrid
@@ -317,34 +309,12 @@ export default function Products() {
                                 </div>
                             </div>
                         </div>
-
-                        {isProductInfo.length > 0 && !loading && (
+                        {showHideProductInfo && (
                             <ProductInfo
-                                data={isProductInfo[0]}
                                 allProducts={products}
                                 handlear={productInfoHideHandlear}
+                                productId={selectedProductId}
                             />
-                        )}
-                        {loading && (
-                            <div className="border border-t-0 w-full h-[75vh] overflow-y-auto tableScrollBar pt-3 ">
-                                <div className="animate-pulse px-1">
-                                    <div className="bg-slate-300 w-24 h-20 mx-auto mb-1"></div>
-                                    <div className="bg-slate-300 w-20 h-2 rounded-md mx-auto mb-4"></div>
-
-                                    <div className="bg-slate-300 w-28 h-2 rounded-md mb-1 "></div>
-                                    <div className="bg-slate-300 w-36 h-2 rounded-md mb-1 "></div>
-                                    <div className="bg-slate-300 w-32 h-2 rounded-md mb-4 "></div>
-
-                                    <div className="bg-slate-300 w-full h-40 mb-1 "></div>
-                                    <div className="bg-slate-300 w-40 h-2 rounded-md mb-4 "></div>
-
-                                    <div className="bg-slate-300 w-10 h-2 rounded-md mb-1 "></div>
-                                    <div className="bg-slate-300 w-full h-8 rounded-md mb-4 "></div>
-
-                                    <div className="bg-slate-300 w-10 h-2 rounded-md mb-1 "></div>
-                                    <div className="bg-slate-300 w-full h-8 rounded-md mb-1 "></div>
-                                </div>
-                            </div>
                         )}
                     </div>
                 ) : (
