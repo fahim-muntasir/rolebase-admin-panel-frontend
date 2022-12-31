@@ -16,6 +16,7 @@ export default function Products() {
     const [selectedProducts, setSelectedProduct] = useState([]);
     const [selectedProductId, setSelectedProductId] = useState(""); // this id for show information
     const [showHideProductInfo, setShowHideProductInfo] = useState(false);
+    const [deleteLoading, setDeleteLoading] = useState(false);
 
     const { status } = useParams();
     const location = useLocation();
@@ -95,6 +96,30 @@ export default function Products() {
         }
     };
 
+    // product delete Handler
+    const productDeleteHandler = () => {
+        setDeleteLoading(true);
+        console.log(selectedProducts);
+        axios
+            .delete(
+                `${
+                    process.env.REACT_APP_BACKEND_URL
+                }/api/products/${JSON.stringify(selectedProducts)}`
+            )
+            .then(({ data }) => {
+                console.log(data);
+                const filterProduct = products.filter(
+                    (product) => !selectedProducts.includes(product?.productId)
+                );
+                setProducts(filterProduct);
+                setDeleteLoading(false);
+            })
+            .catch((error) => {
+                console.log(error);
+                setDeleteLoading(false);
+            });
+    };
+
     return (
         <Layout>
             <div className="pt-6">
@@ -165,7 +190,13 @@ export default function Products() {
                     </ul>
                     <div>
                         {selectedProducts?.length > 0 && (
-                            <button className="flex items-center rounded px-2 h-7 text-sm shadow-sm hover:shadow font-semibold border border-solid border-red-500 text-red-500 gap-1 ">
+                            <button
+                                disabled={deleteLoading}
+                                onClick={productDeleteHandler}
+                                className={`flex items-center rounded px-2 h-7 text-sm shadow-sm hover:shadow font-semibold border border-solid border-red-500 text-red-500 gap-1 ${
+                                    deleteLoading && "cursor-wait"
+                                }`}
+                            >
                                 <AiOutlineDelete /> Delete
                             </button>
                         )}
