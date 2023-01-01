@@ -15,6 +15,7 @@ export default function Users() {
     const [showActionMenu, setShowActionMenu] = useState(true);
     const [showPermissionDiv, setShowPermissionDiv] = useState(false);
     const [selectedUsers, setSelectedUser] = useState([]);
+    const [deleteLoading, setDeleteLoading] = useState(false);
 
     const { role } = useParams();
     const location = useLocation();
@@ -62,22 +63,6 @@ export default function Users() {
         setShowPermissionDiv(false);
     };
 
-    // this process for hide action me when use click on the outside the menu
-    // const actionMenu = useRef();
-    // useEffect(() => {
-    //     const handler = (event) => {
-    //         if (!actionMenu.current.contains(event.target)) {
-    //             setShowActionMenu(false);
-    //         }
-    //     };
-
-    //     document.addEventListener("mousedown", handler);
-
-    //     return () => {
-    //         document.removeEventListener("mousedown", handler);
-    //     };
-    // });
-
     // user select checkbox handler;
     const userCheckBoxHandler = (userID) => {
         if (selectedUsers.includes(userID)) {
@@ -101,6 +86,29 @@ export default function Users() {
             const allUserIds = allUsers.map((product) => product._id);
             setSelectedUser(allUserIds);
         }
+    };
+
+    // user delete Handler
+    const userDeleteHandler = () => {
+        setDeleteLoading(true);
+        axios
+            .delete(
+                `${
+                    process.env.REACT_APP_BACKEND_URL
+                }/api/users/${JSON.stringify(selectedUsers)}`
+            )
+            .then(({ data }) => {
+                console.log(data);
+                const filterProduct = allUsers.filter(
+                    (user) => !selectedUsers.includes(user?._id)
+                );
+                setUsers(filterProduct);
+                setDeleteLoading(false);
+            })
+            .catch((error) => {
+                console.log(error);
+                setDeleteLoading(false);
+            });
     };
 
     return (
@@ -173,7 +181,10 @@ export default function Users() {
                     </ul>
                     <div>
                         {selectedUsers?.length > 0 && (
-                            <button className="flex items-center rounded px-2 h-7 text-sm shadow-sm hover:shadow font-semibold border border-solid border-red-500 text-red-500 gap-1 ">
+                            <button
+                                onClick={userDeleteHandler}
+                                className="flex items-center rounded px-2 h-7 text-sm shadow-sm hover:shadow font-semibold border border-solid border-red-500 text-red-500 gap-1 "
+                            >
                                 <AiOutlineDelete /> Delete
                             </button>
                         )}
