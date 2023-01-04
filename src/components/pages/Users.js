@@ -12,10 +12,10 @@ import UserPermission from "../userPermission/UserPermission";
 
 export default function Users() {
     const [allUsers, setUsers] = useState([]);
-    const [showActionMenu, setShowActionMenu] = useState(true);
     const [showPermissionDiv, setShowPermissionDiv] = useState(false);
     const [selectedUsers, setSelectedUser] = useState([]);
     const [deleteLoading, setDeleteLoading] = useState(false);
+    const [selectedUserId, setSelectedUserId] = useState("");
 
     const { role } = useParams();
     const location = useLocation();
@@ -51,15 +51,13 @@ export default function Users() {
         }
     };
 
-    const showActionMenuHandler = () => {
-        setShowActionMenu((prev) => !prev);
-    };
-
-    const showPermissionDivHandler = () => {
+    const showPermissionDivHandler = (userId) => {
+        setSelectedUserId(userId);
         setShowPermissionDiv(true);
     };
 
     const hidePermissionDivHandler = () => {
+        setSelectedUserId(false);
         setShowPermissionDiv(false);
     };
 
@@ -183,6 +181,7 @@ export default function Users() {
                         {selectedUsers?.length > 0 && (
                             <button
                                 onClick={userDeleteHandler}
+                                disabled={deleteLoading}
                                 className="flex items-center rounded px-2 h-7 text-sm shadow-sm hover:shadow font-semibold border border-solid border-red-500 text-red-500 gap-1 "
                             >
                                 <AiOutlineDelete /> Delete
@@ -269,8 +268,10 @@ export default function Users() {
                                                 <tr
                                                     key={i}
                                                     className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100"
-                                                    onClick={
-                                                        showPermissionDivHandler
+                                                    onClick={() =>
+                                                        showPermissionDivHandler(
+                                                            user._id
+                                                        )
                                                     }
                                                 >
                                                     <td className=" w-8 py-2 whitespace-nowrap">
@@ -322,6 +323,7 @@ export default function Users() {
                         {showPermissionDiv && (
                             <UserPermission
                                 handler={hidePermissionDivHandler}
+                                userId={selectedUserId}
                             />
                         )}
                     </div>
