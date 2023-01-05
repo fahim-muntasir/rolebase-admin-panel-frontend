@@ -99,7 +99,6 @@ export default function Products() {
     // product delete Handler
     const productDeleteHandler = () => {
         setDeleteLoading(true);
-        console.log(selectedProducts);
         axios
             .delete(
                 `${

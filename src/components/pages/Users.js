@@ -2,10 +2,12 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import {
     AiOutlineDelete,
+    AiOutlineEdit,
     AiOutlineExport,
     AiOutlinePlus,
 } from "react-icons/ai";
 import { BiDotsHorizontal } from "react-icons/bi";
+import { CgPassword } from "react-icons/cg";
 import { Link, useLocation, useParams } from "react-router-dom";
 import Layout from "../Layout";
 import UserPermission from "../userPermission/UserPermission";
@@ -16,6 +18,8 @@ export default function Users() {
     const [selectedUsers, setSelectedUser] = useState([]);
     const [deleteLoading, setDeleteLoading] = useState(false);
     const [selectedUserId, setSelectedUserId] = useState("");
+    const [userShowAction, setUserShowAction] = useState({});
+    const [currentUserIdForAction, setCurrentUserIdFroAction] = useState(false);
 
     const { role } = useParams();
     const location = useLocation();
@@ -23,9 +27,33 @@ export default function Users() {
     useEffect(() => {
         axios
             .get(`http://localhost:5000/api/users/${role}`)
-            .then(({ data }) => setUsers(data))
+            .then(({ data }) => {
+                setUsers(data);
+                // create user id object
+                const userIdObject = data.reduce((prev, currentValue) => {
+                    prev[currentValue._id] = false;
+                    return prev;
+                }, {});
+                setUserShowAction(userIdObject);
+            })
             .catch((e) => console.log(e));
     }, [role]);
+
+    const showUserActionHandler = (userId, currentUserId) => {
+        if (currentUserId) {
+            setUserShowAction({
+                ...userShowAction,
+                [currentUserId]: false,
+                [userId]: !userShowAction[userId],
+            });
+        } else {
+            setUserShowAction({
+                ...userShowAction,
+                [userId]: !userShowAction[userId],
+            });
+        }
+        setCurrentUserIdFroAction(userId);
+    };
 
     const userRoleColorSelect = (role) => {
         switch (role) {
@@ -108,6 +136,26 @@ export default function Users() {
                 setDeleteLoading(false);
             });
     };
+
+    // const userMenu = useRef();
+    // useEffect(() => {
+    //     const handler = (event) => {
+    //         if (!userMenu.current?.contains(event.target)) {
+    //             if (currentUserIdForAction) {
+    //                 setUserShowAction({
+    //                     ...userShowAction,
+    //                     [currentUserIdForAction]: false,
+    //                 });
+    //             }
+    //         }
+    //     };
+
+    //     document.addEventListener("mousedown", handler);
+
+    //     return () => {
+    //         document.removeEventListener("mousedown", handler);
+    //     };
+    // });
 
     return (
         <Layout>
@@ -266,13 +314,8 @@ export default function Users() {
                                         <tbody>
                                             {allUsers.map((user, i) => (
                                                 <tr
-                                                    key={i}
-                                                    className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100"
-                                                    onClick={() =>
-                                                        showPermissionDivHandler(
-                                                            user._id
-                                                        )
-                                                    }
+                                                    key={user._id}
+                                                    className="bg-white border-b transition duration-300 ease-in-out"
                                                 >
                                                     <td className=" w-8 py-2 whitespace-nowrap">
                                                         <input
@@ -308,10 +351,46 @@ export default function Users() {
                                                             user.role
                                                         )}
                                                     </td>
-                                                    <td className=" relative text-xl text-gray-900 font-light px-6 py-2 whitespace-nowrap flex justify-center">
-                                                        <button>
-                                                            <BiDotsHorizontal className=" cursor-pointer text-gray-600 " />
-                                                        </button>
+                                                    <td className="text-xl text-gray-900 font-light px-6 py-2 whitespace-nowrap flex justify-center">
+                                                        <div className="relative">
+                                                            <button
+                                                                onClick={() =>
+                                                                    showUserActionHandler(
+                                                                        user?._id,
+                                                                        currentUserIdForAction
+                                                                    )
+                                                                }
+                                                            >
+                                                                <BiDotsHorizontal className=" cursor-pointer text-gray-600 " />
+                                                            </button>
+                                                            {userShowAction?.[
+                                                                user?._id
+                                                            ] && (
+                                                                <div className=" absolute right-8 bottom-2 w-36 shadow text-base bg-gray-50 z-50 border ">
+                                                                    <ul>
+                                                                        <li>
+                                                                            <button className="flex justify-start gap-1 items-center py-2 px-3 hover:bg-gray-100 text-sm font-semibold w-full">
+                                                                                <AiOutlineEdit />{" "}
+                                                                                Edite
+                                                                            </button>
+                                                                        </li>
+                                                                        <li>
+                                                                            <button
+                                                                                onClick={() =>
+                                                                                    showPermissionDivHandler(
+                                                                                        user._id
+                                                                                    )
+                                                                                }
+                                                                                className="flex justify-start gap-1 items-center py-2 px-3 hover:bg-gray-100 text-sm font-semibold w-full"
+                                                                            >
+                                                                                <CgPassword />{" "}
+                                                                                Permission
+                                                                            </button>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            )}
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             ))}
